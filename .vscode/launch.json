@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Python code",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "--importfile",
+                "./data/example.csv",
+                "--credentials",
+                "./.local/secret.json",
+                "--share",
+                "example@gmail.com",
+                "--title",
+                "sample"
+            ]
+        }
+    ]
+}
