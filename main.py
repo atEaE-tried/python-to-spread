@@ -3,9 +3,10 @@ from cli import parse_commandline_args
 from config import Configuration
 from datetime import datetime
 import gspread
+import csv
 from google.oauth2.service_account import Credentials
 
-# e.g. python cmd_create.py --importfile ./data/example.csv --credentials ./.local/secret.json --share example@gmail.com --title Sample
+# e.g. python main.py --importfile ./data/example.csv --credentials ./.local/secret.json --share example@gmail.com --title Sample
 def main():
     """ Main Process
 
@@ -47,6 +48,25 @@ def main():
         wk.add_cols(config.column_buffer)
 
         # input worksheet
+        with open(file=args.importfile, mode="r", encoding="utf-8") as f:
+            reader = csv.DictReader(f, delimiter=",", doublequote=False, lineterminator="\r")
+            
+            # set header
+            h_row_count = 1
+            h_col_count = 1
+            for h in reader.fieldnames:
+                wk.update_cell(h_row_count, h_col_count, h)
+                h_col_count += 1
+
+            # set value
+            fileds = reader.fieldnames
+            v_row_count = 2
+            for row in reader:
+                v_col_count = 1
+                for f in fileds:
+                    wk.update_cell(v_row_count, v_col_count, row[f])
+                    v_col_count += 1
+                v_row_count += 1
 
     except:
         raise
