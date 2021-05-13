@@ -77,6 +77,14 @@ def main():
     return 0
 
 def info(sheet: Spreadsheet):
+    """ Show information.
+
+    Args:
+        sheet (Spreadsheet)
+    Returns:
+        void
+    """
+
     print()
     print('##### SpredSheet Info #####')
     print('* ID    : ', sheet.id)
