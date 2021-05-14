@@ -50,12 +50,14 @@ def main():
         # update worksheet
         wk = sheet.sheet1
         wk.update_title('Result')
-        wk.add_rows(config.row_buffer)
-        wk.add_cols(config.column_buffer)
 
         # input worksheet
         with open(file=args.importfile, mode="r", encoding="utf-8") as f:
             reader = csv.DictReader(f, delimiter=",", doublequote=False, lineterminator="\r")
+
+            # update worksheet
+            wk.add_rows(len(reader.fieldnames) + config.row_buffer)
+            wk.add_cols(config.column_buffer)
             
             # set header
             headers = wk.range(1, 1, 1, len(reader.fieldnames))
