@@ -1,10 +1,13 @@
+from typing import Any
 from gspread.models import Spreadsheet
+import stopwatch
 from cli import parse_commandline_args
 from config import Configuration
 from datetime import datetime
 import gspread
 import csv
 from google.oauth2.service_account import Credentials
+from stopwatch import Stopwatch
 
 # e.g. python main.py --importfile ./data/example.csv --credentials ./.local/secret.json --share example@gmail.com --title Sample
 def main():
@@ -15,6 +18,9 @@ def main():
     Returns:
         code (int): exit status code.
     """
+    stopwatch = Stopwatch()
+    stopwatch.start()
+
     args = parse_commandline_args()
 
     # create sheet title
@@ -52,28 +58,31 @@ def main():
             reader = csv.DictReader(f, delimiter=",", doublequote=False, lineterminator="\r")
             
             # set header
-            h_row_count = 1
-            h_col_count = 1
-            for h in reader.fieldnames:
-                wk.update_cell(h_row_count, h_col_count, h)
-                h_col_count += 1
+            headers = wk.range(1, 1, 1, len(reader.fieldnames))
+            for i in range(len(reader.fieldnames)):
+                headers[i].value = reader.fieldnames[i]
+            wk.update_cells(headers)
 
             # set value
             fileds = reader.fieldnames
             v_row_count = 2
+            total_cells = []
             for row in reader:
-                v_col_count = 1
-                for f in fileds:
-                    wk.update_cell(v_row_count, v_col_count, row[f])
-                    v_col_count += 1
+                cells = wk.range(v_row_count, 1, v_row_count, len(fileds))
+                for i in range(len(fileds)):
+                    cells[i].value = row[fileds[i]]
+                total_cells.extend(cells)
                 v_row_count += 1
+            wk.update_cells(total_cells)
 
     except:
         raise
+
     finally:
+        stopwatch.stop()
         info(sheet)
     
-    print('Complete🎉')
+    print('Complete🎉 : time = ', stopwatch.duration)
     return 0
 
 def info(sheet: Spreadsheet):
