@@ -1,6 +1,5 @@
 from typing import Any
 from gspread.models import Spreadsheet
-import stopwatch
 from cli import parse_commandline_args
 from config import Configuration
 from datetime import datetime
@@ -84,7 +83,7 @@ def main():
         stopwatch.stop()
         info(sheet)
     
-    print('Complete🎉 : time = ', stopwatch.duration)
+    print(f'Complete🎉 : time = {stopwatch.duration}')
     return 0
 
 def info(sheet: Spreadsheet):
@@ -98,8 +97,9 @@ def info(sheet: Spreadsheet):
 
     print()
     print('##### SpredSheet Info #####')
-    print('* ID    : ', sheet.id)
-    print('* URL   : ', sheet.url)
+    print(f'* ID    : {sheet.id}')
+    print(f'* URL   : {sheet.url}')
     print()
 
-main()
+if __name__ == "__main__":
+    main()
